@@ -63,6 +63,13 @@
     <label class="check"><input type="checkbox" id="rx-free"> free slots</label>
     <label class="check" title="Hide receivers that don't publish their exact band coverage"><input type="checkbox" id="rx-confirmed"> confirmed only</label>
   </div>
+  <div class="toolbar wrap scanbar" id="rx-scanbar">
+    <button class="btn sm" id="scan-go">⚡ Scan this category for activity</button>
+    <button class="btn sm ghost" id="scan-stop" hidden>■ stop</button>
+    <span class="mono small muted" id="scan-status">samples a few receivers at a time — it can't listen to all ~1,500 at once</span>
+    <label class="check" title="only show receivers heard talking in the last scan"><input type="checkbox" id="scan-active-only"> talking now</label>
+    <label class="field">scan sort <select class="input" id="scan-sort"><option value="active">most active</option><option value="recent">just scanned</option></select></label>
+  </div>
   <div class="split">
     <div class="split-list">
       <div class="meta mono" id="rx-meta">loading receiver directories…</div>
@@ -86,6 +93,25 @@
       </div>
       <iframe id="rx-frame" title="Receiver" allow="autoplay; microphone 'none'" referrerpolicy="no-referrer"></iframe>
       <div class="viewer-note small muted">Tap inside the receiver to start audio (browsers block autoplay). If it stays blank, that receiver blocks embedding, or it's an <code>http</code> site inside an <code>https</code> page — use ↗ new tab.</div>
+      <details class="card monitor" id="rx-monitor">
+        <summary><h3 style="display:inline">🎧 Live monitor — captions &amp; activity</h3> <span class="tag best">best-effort</span></summary>
+        <p class="muted small" id="mon-intro">Browsers can't reach the audio playing inside the receiver window above (it's a separate site), so this listens through <b>your microphone</b> instead. <b>Play the receiver out loud through your speakers</b> and the monitor will meter the sound and try to caption it. Accuracy depends on how clear the signal is — radio is noisy, so treat captions as a rough best-effort guide, not a transcript.</p>
+        <div class="mon-row">
+          <button class="btn sm" id="mon-mic">▶ Start listening (mic)</button>
+          <label class="check"><input type="checkbox" id="mon-cc"> live captions</label>
+          <label class="check" title="detect non-English speech and translate it to English (free, no account — may be unavailable)"><input type="checkbox" id="mon-tr" checked> translate → English</label>
+        </div>
+        <div class="mon-activity">
+          <span class="act-badge" id="mon-badge">idle</span>
+          <div class="meter" title="live microphone level"><div class="meter-fill" id="mon-meter"></div></div>
+          <span class="mono small muted" id="mon-db">—</span>
+        </div>
+        <div class="cc-box" id="mon-ccbox" hidden>
+          <div class="cc-interim" id="mon-interim"></div>
+          <div class="cc-log" id="mon-cclog"></div>
+        </div>
+        <p class="warn small" id="mon-note" hidden></p>
+      </details>
     </aside>
   </div>
 </section>

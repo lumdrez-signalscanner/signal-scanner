@@ -387,6 +387,33 @@ async function probeHttp(u) {
   } catch (e) { return { ok: false, error: e.name === 'AbortError' ? 'timeout' : e.message }; }
 }
 
+
+// ---------- translation (best-effort, no API key) ----------
+// Uses the public MyMemory endpoint (no key, rate-limited). Auto-detects the
+// source language and returns English. Fails gracefully: if it can't translate,
+// the caller still shows the original transcript.
+async function translateToEnglish(text) {
+  const q = String(text || '').trim();
+  if (!q) return { ok: false, note: 'nothing to translate' };
+  if (q.length > 500) return { ok: false, note: 'line too long to translate', original: q };
+  return cached('tr:' + q.toLowerCase(), 60 * 60e3, async () => {
+    try {
+      const j = await fetchJSON(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${encodeURIComponent('autodetect|en')}`,
+        { timeout: 8000 });
+      const out = j.responseData && j.responseData.translatedText;
+      const detected = (j.responseData && j.responseData.detectedLanguage) || null;
+      if (j.responseStatus !== 200 || !out || /PLEASE SELECT TWO DISTINCT LANGUAGES/i.test(out)) {
+        // happens when the text is already English (source == target)
+        return { ok: true, original: q, translated: q, detected: detected || 'en', alreadyEnglish: true, source: 'mymemory.translated.net' };
+      }
+      return { ok: true, original: q, translated: out, detected, source: 'mymemory.translated.net' };
+    } catch (e) {
+      return { ok: false, note: 'translation unavailable', original: q, error: e.message };
+    }
+  });
+}
+
 // ---------- HTTP server ----------
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json' };
 function send(res, code, body, type = 'application/json') {
@@ -421,6 +448,11 @@ const server = http.createServer(async (req, res) => {
       case '/api/receivers/all': return send(res, 200, await getAllReceivers());
       case '/api/receivers/receiverbook': return send(res, 200, await getReceiverbook());
       case '/api/presets': return send(res, 200, readData('presets.json'));
+      case '/api/translate': {
+        const text = (q.text || '').slice(0, 500);
+        if (!text) return send(res, 200, { ok: false, note: 'pass ?text=' });
+        return send(res, 200, await translateToEnglish(text));
+      }
       case '/api/adsb': {
         const d = CONFIG.defaultLocation;
         return send(res, 200, await getAdsb(num(q.lat, d.lat, -90, 90), num(q.lon, d.lon, -180, 180), Math.round(num(q.dist, 150, 5, 250))));

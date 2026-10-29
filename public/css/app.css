@@ -285,3 +285,35 @@ details.card[open] > summary::before { content: '▾ '; }
   .nav > a { font-size: .6rem; }
   .opts { grid-template-columns: 1fr 1fr; }
 }
+
+/* ===== plain-language labels (beginner) ===== */
+.plain { font-size: .92rem; color: var(--text); background: color-mix(in srgb, var(--accent2) 9%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--accent2) 30%, var(--line)); border-left: 3px solid var(--accent2);
+  border-radius: 8px; padding: 8px 11px; margin: 8px 0; line-height: 1.45; }
+.plain b { color: var(--accent2); }
+.preset-plain { background: color-mix(in srgb, var(--accent) 9%, var(--panel)); border-left-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+
+/* ===== scan bar ===== */
+.scanbar { margin: 4px 0 12px; }
+.tag.talk { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 700; }
+.tag.quiet { color: var(--muted); }
+.tag.best { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, var(--line)); background: color-mix(in srgb, var(--warn) 8%, var(--panel)); }
+
+/* ===== live monitor ===== */
+.monitor { margin-top: 10px; }
+.monitor summary { cursor: pointer; }
+.mon-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 10px 0; }
+.mon-activity { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.act-badge { font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); background: var(--panel); white-space: nowrap; }
+.act-badge.ACTIVE { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: var(--glow); animation: pulse 1.2s infinite; }
+.act-badge.scanning { color: var(--bg); background: var(--accent2); border-color: var(--accent2); }
+.meter { flex: 1; min-width: 120px; height: 12px; background: var(--panel2); border: 1px solid var(--line); border-radius: 99px; overflow: hidden; }
+.meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent2), var(--accent)); transition: width .08s linear; }
+.cc-box { margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel2); padding: 8px; }
+.cc-interim { color: var(--muted); font-style: italic; min-height: 1.2em; }
+.cc-log { max-height: 180px; overflow-y: auto; font-size: .9rem; }
+.cc-line { padding: 2px 0; border-bottom: 1px dashed color-mix(in srgb, var(--line) 60%, transparent); }
+.cc-t { color: var(--muted); font-size: .72rem; margin-right: 6px; }
+.cc-tr { color: var(--accent); }

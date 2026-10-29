@@ -127,6 +127,7 @@ const radio = (() => {
   let presets = { groups: [], categories: [], audioStreams: [] };
   let all = [], info = null, counts = {};
   let cat = LS.get('rxCat', 'all'), net = 'all', preset = null, limit = 40, sort = LS.get('rxSort', 'near');
+  let scanRes = {}, scanOn = false, mon = null; // mic monitor + per-receiver scan state (keyed by rx.url)
   const MODE = {
     kiwisdr: { fm: 'nbfm', wfm: 'nbfm' }, websdr: { wfm: 'fm' }, ubersdr: { wfm: 'fm' }, novasdr: { wfm: 'fm' }, openwebrx: { fm: 'nfm' },
   };
@@ -175,24 +176,32 @@ const radio = (() => {
       wide: (a, b) => span(b) - span(a) || (a.d ?? 1e9) - (b.d ?? 1e9),
       net: (a, b) => a.network.localeCompare(b.network) || (a.d ?? 1e9) - (b.d ?? 1e9),
     }[sort] || ((a, b) => 0);
-    // confirmed coverage first, then the chosen sort
-    return list.sort((a, b) => (b.m - a.m) || by(a, b));
+    if ($('#scan-active-only') && $('#scan-active-only').checked)
+      list = list.filter(x => scanRes[x.url] && scanRes[x.url].active);
+    const rank = rx => { const r = scanRes[rx.url]; return r && r.active ? (r.level || 1) : 0; };
+    const seen = rx => { const r = scanRes[rx.url]; return r ? r.ts : 0; };
+    if ($('#scan-sort') && $('#scan-sort').value === 'recent')
+      return list.sort((a, b) => (b.m - a.m) || (seen(b) - seen(a)) || by(a, b));
+    // confirmed coverage first, then talking-now (after a scan), then the chosen sort
+    return list.sort((a, b) => (b.m - a.m) || (rank(b) - rank(a)) || by(a, b));
   }
   function computeCounts() {
     counts = { all: all.length };
     for (const c of presets.categories) counts[c.id] = all.reduce((n, rx) => n + (match(rx, c, null) > 0), 0);
   }
   function renderCats() {
-    const chip = c => `<button class="chip ${cat === c.id ? 'on' : ''}" data-cat="${c.id}" title="${esc(c.label)}">${c.icon} ${esc(c.label)}${counts[c.id] != null ? `<span class="n">${counts[c.id]}</span>` : ''}</button>`;
+    const chip = c => `<button class="chip ${cat === c.id ? 'on' : ''}" data-cat="${c.id}" title="${esc(c.plain || c.label)}">${c.icon} ${esc(c.label)}${counts[c.id] != null ? `<span class="n">${counts[c.id]}</span>` : ''}</button>`;
     $('#rx-cats').innerHTML = `<div class="cat-group"><span class="cat-label">all</span><button class="chip ${cat === 'all' ? 'on' : ''}" data-cat="all">◇ Everything<span class="n">${counts.all ?? '…'}</span></button></div>` +
       presets.groups.map(g => `<div class="cat-group"><span class="cat-label">${esc(g.label)}</span>${presets.categories.filter(c => c.group === g.id).map(chip).join('')}</div>`).join('');
     const c = curCat();
     if (!c) { $('#rx-presets').innerHTML = `<div class="blurb">Every public receiver we know about. Pick a category above to see what to listen for and jump straight to the right frequency — or type one in:</div>${manualHtml()}`; return; }
     $('#rx-presets').innerHTML = `<div class="blurb">${esc(c.blurb)}</div>` +
+      (c.plain ? `<div class="plain">🔰 <b>In plain words:</b> ${esc(c.plain)}</div>` : '') +
       (c.legal ? `<div class="legal-note">⚖ ${esc(c.legal)}</div>` : '') +
       (c.view ? `<a class="btn sm" href="#${c.view}">open live ${esc(c.view)} view →</a> ` : '') +
       (c.presets.length ? `<div class="mono small muted" style="margin:8px 0 6px">tap a frequency to tune every receiver to it:</div><div class="preset-row">` +
-        c.presets.map((p, i) => `<button class="preset ${preset === p ? 'on' : ''}" data-i="${i}"><b>${fmtFreq(p.khz)}</b> ${p.mode.toUpperCase()} · ${esc(p.name)}</button>`).join('') + '</div>' : '') +
+        c.presets.map((p, i) => `<button class="preset ${preset === p ? 'on' : ''}" data-i="${i}" title="${esc(p.plain || p.name)}"><b>${fmtFreq(p.khz)}</b> ${p.mode.toUpperCase()} · ${esc(p.name)}</button>`).join('') + '</div>' : '') +
+      (preset && preset.plain ? `<div class="plain preset-plain">🔰 ${esc(preset.plain)}</div>` : '') +
       manualHtml() +
       (c.links?.length ? `<div class="ref-links">${c.links.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener" title="${esc(l.note)}">${esc(l.name)} ↗</a>`).join('')}</div>` : '');
   }
@@ -213,7 +222,7 @@ const radio = (() => {
       const cover = rx.bands ? rx.bands.slice(0, 2).map(([a, b]) => `${fmtFreq(a / 1000)}–${fmtFreq(b / 1000)}`).join(', ') + (rx.bands.length > 2 ? ` +${rx.bands.length - 2}` : '') : 'coverage not published';
       return `<div class="rx" data-i="${i}">
         <div class="rx-name" title="${esc(rx.name)}">${esc(rx.name)}</div>
-        <div class="rx-sub"><span class="tag">${NETS[rx.network] || rx.kind}</span>${rx.m === 1 ? '<span class="tag maybe" title="This receiver does not publish its band list; its description suggests it covers this">likely</span>' : ''}${rx.d != null ? `<span>⊕ ${fmtKm(rx.d)}</span>` : ''}
+        <div class="rx-sub">${scanRes[rx.url] ? (scanRes[rx.url].active ? '<span class="tag talk" title="heard activity in the last scan">🔊 talking</span>' : '<span class="tag quiet" title="sounded quiet in the last scan">· quiet</span>') : ''}<span class="tag">${NETS[rx.network] || rx.kind}</span>${rx.m === 1 ? '<span class="tag maybe" title="This receiver does not publish its band list; its description suggests it covers this">likely</span>' : ''}${rx.d != null ? `<span>⊕ ${fmtKm(rx.d)}</span>` : ''}
           ${rx.usersMax != null ? `<span class="tag ${full ? 'full' : 'free'}">${rx.users}/${rx.usersMax} users</span>` : ''}
           <span>${esc(cover)}</span>${rx.antenna ? `<span title="antenna">⌇ ${esc(rx.antenna.slice(0, 60))}</span>` : ''}</div>
         <div class="rx-actions"><button class="btn sm" data-act="tune">▶ ${preset ? 'tune' : 'open'}</button><a class="btn sm ghost" href="${esc(tuneUrl(rx, preset))}" target="_blank" rel="noopener" title="open in new tab">↗</a></div>
@@ -273,8 +282,171 @@ const radio = (() => {
       open(tuneUrl(rx, preset), `${rx.name}${preset ? ' @ ' + fmtFreq(preset.khz) + ' ' + preset.mode.toUpperCase() : ''}`);
     });
     $('#rx-vclose').addEventListener('click', close);
+    initMonitor();
     ready = load().catch(e => ($('#rx-meta').textContent = 'Failed to load receivers: ' + e.message));
   }
+
+  // ---------------- Live monitor: mic level meter, voice-activity, captions ----------------
+  // Browsers can't tap the audio inside the cross-origin receiver iframe, so this
+  // listens through the microphone (play the receiver aloud). Best-effort by design.
+  const ACT_THRESH = 0.045;          // RMS above this = "active" (tuned for speaker->mic)
+  function monNote(msg) { const n = $('#mon-note'); if (!n) return; n.hidden = !msg; n.textContent = msg || ''; }
+  function monBadge(state) {
+    const b = $('#mon-badge'); if (!b) return;
+    b.textContent = state; b.className = 'act-badge ' + state;
+  }
+  async function ensureMic(forScan) {
+    if (mon && mon.stream) return mon;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AC();
+      const src = ctx.createMediaStreamSource(stream);
+      const an = ctx.createAnalyser(); an.fftSize = 1024;
+      src.connect(an);
+      mon = { stream, ctx, an, buf: new Uint8Array(an.fftSize), raf: 0, peak: 0, ccOn: false };
+      monNote('');
+      loopMeter();
+      return mon;
+    } catch (e) {
+      monBadge('idle');
+      monNote('Microphone unavailable: ' + (e && e.message || e) + '. The meter and captions need mic access — allow it, or use a desktop browser.');
+      if (forScan) throw e;
+      return null;
+    }
+  }
+  function rms() {
+    if (!mon) return 0;
+    mon.an.getByteTimeDomainData(mon.buf);
+    let sum = 0; for (let i = 0; i < mon.buf.length; i++) { const v = (mon.buf[i] - 128) / 128; sum += v * v; }
+    return Math.sqrt(sum / mon.buf.length);
+  }
+  function loopMeter() {
+    if (!mon) return;
+    const r = rms();
+    mon.peak = Math.max(mon.peak * 0.9, r);
+    const pct = Math.min(100, Math.round(r * 350));
+    const fill = $('#mon-meter'); if (fill) fill.style.width = pct + '%';
+    const db = $('#mon-db'); if (db) db.textContent = (r > 0.0008 ? (20 * Math.log10(r)).toFixed(0) + ' dB' : '—');
+    if (!scanOn) monBadge(r > ACT_THRESH ? 'ACTIVE' : 'quiet');
+    mon.raf = requestAnimationFrame(loopMeter);
+  }
+  function stopMic() {
+    if (!mon) return;
+    cancelAnimationFrame(mon.raf);
+    try { mon.stream.getTracks().forEach(t => t.stop()); } catch (e) {}
+    try { mon.ctx.close(); } catch (e) {}
+    mon = null; monBadge('idle');
+    const fill = $('#mon-meter'); if (fill) fill.style.width = '0%';
+  }
+  // sample peak mic RMS over `ms` and return it (used by the scanner)
+  function sampleLevel(ms) {
+    return new Promise(res => {
+      if (!mon) return res(0);
+      let peak = 0; const t0 = performance.now();
+      (function tick() {
+        peak = Math.max(peak, rms());
+        if (performance.now() - t0 < ms && scanOn) requestAnimationFrame(tick);
+        else res(peak);
+      })();
+    });
+  }
+
+  // ---- captions (Web Speech API, Chromium desktop only) ----
+  let recog = null, ccOn = false;
+  function captionsSupported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
+  function startCaptions() {
+    if (!captionsSupported()) {
+      monNote('Live captions need a Chromium-based desktop browser (Chrome, Edge or Opera on a computer). This browser — likely Safari, iOS or Firefox — has no in-page speech recognition, so captions are off. The level meter and activity scan still work.');
+      const cb = $('#mon-cc'); if (cb) cb.checked = false; return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recog = new SR();
+    recog.continuous = true; recog.interimResults = true; recog.lang = 'en-US';
+    recog.onresult = ev => {
+      let interim = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const r = ev.results[i];
+        if (r.isFinal) addCaption(r[0].transcript.trim());
+        else interim += r[0].transcript;
+      }
+      const il = $('#mon-interim'); if (il) il.textContent = interim;
+    };
+    recog.onerror = ev => {
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') monNote('Captions need microphone permission — it was blocked.');
+      else if (ev.error === 'no-speech') { /* ignore */ }
+    };
+    recog.onend = () => { if (ccOn) { try { recog.start(); } catch (e) {} } };
+    try { recog.start(); ccOn = true; $('#mon-ccbox').hidden = false; } catch (e) {}
+  }
+  function stopCaptions() { ccOn = false; if (recog) { try { recog.stop(); } catch (e) {} } const il = $('#mon-interim'); if (il) il.textContent = ''; }
+  function addCaption(text) {
+    if (!text) return;
+    const log = $('#mon-cclog'); if (!log) return;
+    const line = document.createElement('div');
+    line.className = 'cc-line';
+    line.innerHTML = `<span class="cc-t mono">${new Date().toTimeString().slice(0, 8)}</span> ${esc(text)}`;
+    log.appendChild(line);
+    while (log.children.length > 60) log.removeChild(log.firstChild);
+    log.scrollTop = log.scrollHeight;
+    if ($('#mon-tr') && $('#mon-tr').checked) translateLine(line, text);
+  }
+  async function translateLine(el, text) {
+    try {
+      const r = await api('/api/translate?text=' + encodeURIComponent(text));
+      if (r && r.ok && !r.alreadyEnglish && r.translated && r.translated.trim().toLowerCase() !== text.trim().toLowerCase()) {
+        const tag = document.createElement('span');
+        tag.className = 'cc-tr';
+        tag.innerHTML = ` ↳ EN: ${esc(r.translated)}` + (r.detected ? ` <span class="muted">(${esc(r.detected)})</span>` : '');
+        el.appendChild(tag);
+      } else if (r && r.ok === false) {
+        const tag = document.createElement('span'); tag.className = 'muted'; tag.textContent = ' (translation unavailable)'; el.appendChild(tag);
+      }
+    } catch (e) { /* leave original transcript as-is */ }
+  }
+
+  // ---- scan a category's receivers for activity ----
+  function scanStatus(msg) { const el = $('#scan-status'); if (el) el.textContent = msg; }
+  function scanBtns() { $('#scan-go').hidden = scanOn; $('#scan-stop').hidden = !scanOn; }
+  async function runScan() {
+    if (scanOn) return;
+    const list = (render.list || filtered()).slice(0, 12);
+    if (!list.length) { scanStatus('no receivers to scan — pick a category/band first'); return; }
+    try { await ensureMic(true); } catch (e) { scanStatus('scan needs microphone access (play receivers aloud so the mic can hear them)'); return; }
+    scanOn = true; scanBtns();
+    monBadge('scanning');
+    for (let i = 0; i < list.length && scanOn; i++) {
+      const rx = list[i];
+      scanStatus(`sampling ${i + 1}/${list.length}: ${rx.name} — play it aloud…`);
+      open(tuneUrl(rx, preset), rx.name);
+      const peak = await sampleLevel(4500);
+      scanRes[rx.url] = { active: peak > ACT_THRESH, level: peak, ts: Date.now() };
+      render();
+    }
+    const done = scanOn;
+    scanOn = false; scanBtns();
+    const n = list.filter(r => scanRes[r.url] && scanRes[r.url].active).length;
+    scanStatus(done ? `scanned ${list.length}, ${n} sounded active — sorted talking-now first. (samples a few at a time; depends on audio playing aloud)` : 'scan stopped');
+  }
+  function stopScan() { scanOn = false; scanBtns(); scanStatus('scan stopped'); }
+
+  function initMonitor() {
+    const mic = $('#mon-mic'); if (!mic) return;
+    if (!captionsSupported()) monNote('Heads-up: live captions need a Chromium-based desktop browser (Chrome/Edge/Opera). The level meter and activity scan work everywhere with mic access.');
+    mic.addEventListener('click', async () => {
+      if (mon) { stopMic(); stopCaptions(); const cb = $('#mon-cc'); if (cb) cb.checked = false; mic.textContent = '▶ Start listening (mic)'; return; }
+      const m = await ensureMic(false);
+      if (m) mic.textContent = '■ Stop listening';
+    });
+    $('#mon-cc').addEventListener('change', async e => {
+      if (e.target.checked) { await ensureMic(false); startCaptions(); } else { stopCaptions(); }
+    });
+    $('#scan-go').addEventListener('click', runScan);
+    $('#scan-stop').addEventListener('click', stopScan);
+    $('#scan-active-only').addEventListener('change', render);
+    $('#scan-sort').addEventListener('change', render);
+  }
+
   const matches = (rx, catId) => match(rx, presets.categories.find(c => c.id === catId), null) > 0;
   return { init, render, open, select, tuneUrl, NETS, matches, stations: () => all, categories: () => presets.categories, ready: () => ready };
 })();

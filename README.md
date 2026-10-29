@@ -81,6 +81,14 @@ The **Local RX** tab explains each setup and probes it on your LAN:
 
 The probe refuses non-LAN addresses.
 
+## Live monitor, activity scan & plain-language labels
+
+- **Plain-language labels** — every band, category and preset now has a one-line, jargon-free explanation (e.g. *ACARS = short text messages airliners send to their airline*). It sits on top of the existing deeper write-ups.
+- **Live monitor (best-effort)** — open a receiver, then open the 🎧 Live monitor under the viewer. Browsers can't reach the audio inside the cross-origin receiver window, so the monitor listens through **your microphone** — play the receiver aloud through your speakers. It shows a live level meter and an ACTIVE/quiet voice-activity indicator (Web Audio `AnalyserNode`).
+- **Live captions** — use the browser's Web Speech API, so they only work on a **Chromium-based desktop browser** (Chrome/Edge/Opera); iOS Safari and Firefox get a clear in-UI fallback message. Captions are a rough guide, not a transcript — radio is noisy.
+- **Translate → English** — each caption line is sent to `/api/translate`, a keyless server proxy to MyMemory that auto-detects the language and returns English. No API key is stored anywhere. If translation is unavailable, the original transcript still shows.
+- **Scan for activity** — samples the first ~12 receivers of the current category/band a few seconds each (it can't poll all ~1,500 at once), flags which sound active right now, and floats "talking now" to the top; filter with the *talking now* checkbox. Depends on audio playing aloud for the mic to hear.
+
 ## Notes and limits
 
 - Most KiwiSDR and WebSDR sites are plain **http**. The app opens them in the in-app viewer, which works locally. If a site refuses to be framed, use the ↗ button to open it in a new tab.
