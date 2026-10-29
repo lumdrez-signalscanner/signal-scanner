@@ -1,0 +1,16 @@
+{
+  "defaultLocation": { "lat": 46.2382, "lon": -63.1311, "label": "Charlottetown, PEI" },
+  "keys": {
+    "windy": "",
+    "ns511": "",
+    "nb511": "",
+    "on511": "",
+    "ab511": ""
+  },
+  "localReceiver": {
+    "enabled": false,
+    "type": "openwebrx",
+    "url": "",
+    "rtlTcp": ""
+  }
+}

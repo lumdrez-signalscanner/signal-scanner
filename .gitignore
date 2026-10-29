@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Test scratch files
+t.js
+t2.js
+t3.js
+
+# Temp artifacts
+/tmp/
+tmp/
+*.tmp
+*.log
+npm-debug.log*
+
+# Local archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env

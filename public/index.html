@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05090a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Scanner">
+<title>SIGNAL//SCANNER</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="stylesheet" href="/vendor/leaflet.css">
+<link rel="stylesheet" href="/css/app.css">
+<script>
+  // apply saved theme before first paint (no flash)
+  try { const t = JSON.parse(localStorage.getItem('ss.theme') || 'null'); if (t && t.vars) for (const [k, v] of Object.entries(t.vars)) document.documentElement.style.setProperty(k, v);
+        if (t && t.fx) for (const f of ['scanlines','grid','glow']) document.documentElement.classList.toggle('fx-' + f, !!t.fx[f]); else document.documentElement.classList.add('fx-scanlines','fx-grid','fx-glow');
+        if (t && t.scale) document.documentElement.style.fontSize = (16 * t.scale) + 'px'; } catch (e) {}
+</script>
+</head>
+<body>
+<div class="crt" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#radio"><span class="brand-mark">◉</span><span class="brand-text">SIGNAL<span class="slash">//</span>SCANNER</span></a>
+  <div class="status">
+    <span class="pill" id="st-loc" title="Monitoring location">⊕ —</span>
+    <span class="pill mono" id="st-clock">--:--:-- UTC</span>
+    <span class="pill ok" id="st-net" title="Backend status">● LINK</span>
+  </div>
+  <a class="icon-btn" href="#settings" title="Theme & settings" aria-label="Settings">⚙</a>
+</header>
+
+<nav class="nav" id="nav">
+  <a href="#radio" data-view="radio"><span class="ni">📡</span><span class="nl">Radio</span></a>
+  <a href="#map" data-view="map"><span class="ni">◍</span><span class="nl">Map</span></a>
+  <a href="#flights" data-view="flights"><span class="ni">✈</span><span class="nl">Flights</span></a>
+  <a href="#cams" data-view="cams"><span class="ni">▦</span><span class="nl">Cameras</span></a>
+  <a href="#learn" data-view="learn"><span class="ni">◆</span><span class="nl">Learn</span></a>
+  <a href="#local" data-view="local"><span class="ni">⌁</span><span class="nl">Local RX</span></a>
+  <a href="#settings" data-view="settings" class="nav-settings"><span class="ni">⚙</span><span class="nl">Settings</span></a>
+  <div class="nav-foot mono">public sources only<br><a href="#legal">legal notes</a></div>
+</nav>
+
+<main id="main">
+
+<!-- ================= RADIO ================= -->
+<section class="view" id="view-radio">
+  <div class="view-head">
+    <h1><span class="prompt">&gt;</span> radio<span class="cursor">_</span></h1>
+    <p class="sub">Every public KiwiSDR, WebSDR and OpenWebRX receiver we can find, sorted by signal type. Pick a category, pick a receiver near you, listen live.</p>
+  </div>
+  <div class="cats" id="rx-cats"></div>
+  <div class="presets card" id="rx-presets"></div>
+  <div class="toolbar wrap">
+    <div class="seg" id="rx-net">
+      <button data-net="all" class="on">All</button><button data-net="kiwisdr">KiwiSDR</button><button data-net="websdr">WebSDR</button><button data-net="openwebrx">OpenWebRX</button>
+    </div>
+    <input class="input grow" id="rx-search" type="search" placeholder="search name / place / antenna…">
+    <label class="field">sort <select class="input" id="rx-sort"><option value="near">nearest</option><option value="free">most free slots</option><option value="wide">widest coverage</option><option value="name">name A–Z</option><option value="net">network</option></select></label>
+    <label class="check"><input type="checkbox" id="rx-free"> free slots</label>
+    <label class="check" title="Hide receivers that don't publish their exact band coverage"><input type="checkbox" id="rx-confirmed"> confirmed only</label>
+  </div>
+  <div class="split">
+    <div class="split-list">
+      <div class="meta mono" id="rx-meta">loading receiver directories…</div>
+      <div class="list" id="rx-list"></div>
+      <button class="btn ghost wide" id="rx-more" hidden>show more</button>
+      <div class="card">
+        <h3>Public airband &amp; scanner audio</h3>
+        <p class="muted small">Internet SDRs are mostly HF, so VHF airband near PEI is easiest via these public, owner-published audio feeds (open in a new tab).</p>
+        <ul class="links" id="rx-streams"></ul>
+      </div>
+      <details class="card"><summary><h3 style="display:inline">Receiver directories</h3></summary>
+        <ul class="links small" id="rx-sources"></ul>
+        <p class="muted small">Lists refresh every 10–15 min. If a directory is unreachable the app uses a bundled snapshot (refresh with <code>npm run snapshots</code>).</p>
+      </details>
+    </div>
+    <aside class="viewer" id="rx-viewer" hidden>
+      <div class="viewer-bar">
+        <div class="viewer-title mono" id="rx-vtitle">—</div>
+        <a class="btn sm" id="rx-vopen" target="_blank" rel="noopener">↗ new tab</a>
+        <button class="btn sm ghost" id="rx-vclose" aria-label="Close">✕</button>
+      </div>
+      <iframe id="rx-frame" title="Receiver" allow="autoplay; microphone 'none'" referrerpolicy="no-referrer"></iframe>
+      <div class="viewer-note small muted">Tap inside the receiver to start audio (browsers block autoplay). If it stays blank, that receiver blocks embedding, or it's an <code>http</code> site inside an <code>https</code> page — use ↗ new tab.</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= CAMERAS ================= -->
+<section class="view" id="view-cams" hidden>
+  <div class="view-head">
+    <h1><span class="prompt">&gt;</span> cameras<span class="cursor">_</span></h1>
+    <p class="sub">Officially published traffic cameras and public weather/space imagery. Images refresh automatically.</p>
+  </div>
+  <div class="toolbar wrap">
+    <select class="input" id="cam-source"></select>
+    <select class="input" id="cam-district" hidden></select>
+    <input class="input grow" id="cam-search" type="search" placeholder="filter cameras…">
+    <label class="check"><input type="checkbox" id="cam-auto" checked> auto-refresh</label>
+  </div>
+  <div class="meta mono" id="cam-meta"></div>
+  <div class="grid" id="cam-grid"></div>
+  <button class="btn ghost wide" id="cam-more" hidden>show more</button>
+</section>
+
+<!-- ================= MAP ================= -->
+<section class="view" id="view-map" hidden>
+  <div class="view-head">
+    <h1><span class="prompt">&gt;</span> map<span class="cursor">_</span></h1>
+    <p class="sub">Every public receiver, camera and aircraft on one map. Turn layers on as you need them.</p>
+  </div>
+  <div class="toolbar wrap">
+    <div class="layer-toggles" id="mp-layers">
+      <button class="layer on" data-layer="rx"><i class="dot lrx"></i>receivers <span class="n" id="mp-n-rx">…</span></button>
+      <button class="layer on" data-layer="ac"><i class="dot ac"></i>aircraft <span class="n" id="mp-n-ac">…</span></button>
+      <button class="layer" data-layer="cam"><i class="dot cam"></i>cameras <span class="n" id="mp-n-cam">off</span></button>
+    </div>
+    <button class="btn sm ghost" id="mp-home">⊕ home</button>
+    <button class="btn sm ghost" id="mp-world">◍ world</button>
+  </div>
+  <details class="map-opts" id="mp-opts">
+    <summary class="mono small">filters</summary>
+    <div class="toolbar wrap">
+      <label class="field">receivers <select class="input" id="mp-rxcat"><option value="all">all categories</option></select></label>
+      <label class="field">cameras <select class="input" id="mp-camsrc"></select></label>
+    </div>
+  </details>
+  <div class="meta mono" id="mp-meta">—</div>
+  <div id="mp-map" class="map bigmap"></div>
+  <div class="legend mono small"><span><i class="dot kiwisdr"></i>KiwiSDR</span><span><i class="dot websdr"></i>WebSDR</span><span><i class="dot openwebrx"></i>OpenWebRX</span><span><i class="dot cam"></i>camera</span><span>✈ aircraft (colour = altitude)</span><span><i class="dot home"></i>you</span></div>
+</section>
+
+<!-- ================= LEARN ================= -->
+<section class="view" id="view-learn" hidden>
+  <div class="view-head">
+    <h1><span class="prompt">&gt;</span> learn<span class="cursor">_</span></h1>
+    <p class="sub">A guided path from "what is a frequency?" to running your own receiver. Each lesson is a few minutes, ends with a one-question check, and links straight into the live tools.</p>
+  </div>
+  <div class="card learn-hud" id="ln-hud"></div>
+  <div id="ln-levels"></div>
+</section>
+
+<!-- ================= FLIGHTS ================= -->
+<section class="view" id="view-flights" hidden>
+  <div class="view-head">
+    <h1><span class="prompt">&gt;</span> flights<span class="cursor">_</span></h1>
+    <p class="sub">Live ADS-B positions broadcast in the clear by aircraft, from the public adsb.fi network (adsb.lol fallback).</p>
+  </div>
+  <div class="toolbar wrap">
+    <label class="field">lat <input class="input num" id="fl-lat" inputmode="decimal"></label>
+    <label class="field">lon <input class="input num" id="fl-lon" inputmode="decimal"></label>
+    <label class="field">radius <select class="input" id="fl-dist"><option>50</option><option>100</option><option selected>150</option><option>250</option></select> nm</label>
+    <button class="btn" id="fl-apply">apply</button>
+    <button class="btn ghost" id="fl-geo">⊕ my location</button>
+    <label class="check"><input type="checkbox" id="fl-live" checked> live (10 s)</label>
+  </div>
+  <div class="meta mono" id="fl-meta">—</div>
+  <div class="flights">
+    <div id="fl-map" class="map"></div>
+    <div class="table-wrap"><table class="table" id="fl-table"><thead><tr><th>callsign</th><th>type</th><th class="r">alt ft</th><th class="r">kt</th><th class="r">nm</th><th>sqk</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- ================= LOCAL RECEIVER ================= -->
+<section class="view" id="view-local" hidden>
+  <div class="view-head">
+    <h1><span class="prompt">&gt;</span> local receiver<span class="cursor">_</span></h1>
+    <p class="sub">Connect your own RTL-SDR here once you have one. Nothing on this page pretends to receive anything until real hardware answers.</p>
+  </div>
+  <div class="card banner" id="lr-banner"><strong>NOT YET ACTIVE</strong> — connect your receiver here. No hardware detected.</div>
+  <div class="cols">
+    <div class="card">
+      <h3>Connection</h3>
+      <label class="field block">Receiver type
+        <select class="input" id="lr-type">
+          <option value="openwebrx">OpenWebRX (web UI, recommended for iPhone)</option>
+          <option value="websdr">KiwiSDR / WebSDR-compatible web UI</option>
+          <option value="rtltcp">rtl_tcp (raw IQ, for SDR++ / SDR#)</option>
+        </select></label>
+      <label class="field block" id="lr-url-wrap">Web UI URL <input class="input" id="lr-url" placeholder="http://192.168.1.50:8073"></label>
+      <label class="field block" id="lr-tcp-wrap" hidden>rtl_tcp host:port <input class="input" id="lr-tcp" placeholder="127.0.0.1:1234"></label>
+      <div class="row">
+        <button class="btn" id="lr-save">save</button>
+        <button class="btn ghost" id="lr-probe">probe connection</button>
+        <button class="btn ghost" id="lr-open" disabled>open in viewer</button>
+      </div>
+      <pre class="term" id="lr-out">$ waiting for receiver config…</pre>
+    </div>
+    <div class="card">
+      <h3>Setup guide (Windows laptop)</h3>
+      <ol class="steps">
+        <li><b>Buy</b> an RTL-SDR Blog V4 dongle (~$40 CAD) with the dipole antenna kit.</li>
+        <li><b>Driver:</b> plug it in, run <a href="https://zadig.akeo.ie/" target="_blank" rel="noopener">Zadig</a>, pick “Bulk-In, Interface (Interface 0)”, install <code>WinUSB</code>.</li>
+        <li><b>Quickest listen:</b> install <a href="https://github.com/AlexandreRouma/SDRPlusPlus/releases" target="_blank" rel="noopener">SDR++</a> on the laptop and tune directly.</li>
+        <li><b>Raw IQ server:</b> run <code>rtl_tcp -a 0.0.0.0 -p 1234</code>, choose <i>rtl_tcp</i> above with <code>127.0.0.1:1234</code>, press <i>probe</i>. A real dongle answers with an <code>RTL0</code> header + tuner name.</li>
+        <li><b>Listen on the iPhone too:</b> run <a href="https://github.com/jketterl/openwebrx" target="_blank" rel="noopener">OpenWebRX</a> (Docker: <code>docker run -d -p 8073:8073 --device /dev/bus/usb jketterl/openwebrx</code> on a Linux box / Raspberry Pi), then set its URL above. It then appears in this app's viewer on any device on your Wi-Fi.</li>
+      </ol>
+      <p class="small muted">Interface contract: see <code>README.md → Local receiver interface</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SETTINGS ================= -->
+<section class="view" id="view-settings" hidden>
+  <div class="view-head">
+    <h1><span class="prompt">&gt;</span> settings<span class="cursor">_</span></h1>
+    <p class="sub">Your location and the look of the console. Saved on this device.</p>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <h3>Location</h3>
+      <p class="small muted">Used to sort receivers by distance and centre the flight map.</p>
+      <div class="row">
+        <label class="field">label <input class="input" id="set-label"></label>
+      </div>
+      <div class="row">
+        <label class="field">lat <input class="input num" id="set-lat" inputmode="decimal"></label>
+        <label class="field">lon <input class="input num" id="set-lon" inputmode="decimal"></label>
+      </div>
+      <div class="row">
+        <button class="btn" id="set-save-loc">save location</button>
+        <button class="btn ghost" id="set-geo">⊕ use device location</button>
+      </div>
+      <div class="small muted" id="set-loc-msg"></div>
+    </div>
+    <div class="card">
+      <h3>Theme</h3>
+      <div class="themes" id="set-themes"></div>
+      <h4>Custom colours</h4>
+      <div class="colors" id="set-colors"></div>
+      <h4>Effects</h4>
+      <div class="row wrap">
+        <label class="check"><input type="checkbox" id="fx-scanlines"> scanlines</label>
+        <label class="check"><input type="checkbox" id="fx-grid"> grid backdrop</label>
+        <label class="check"><input type="checkbox" id="fx-glow"> neon glow</label>
+      </div>
+      <label class="field block">text size <input type="range" id="set-scale" min="0.85" max="1.25" step="0.05"></label>
+      <div class="row"><button class="btn ghost" id="set-reset">reset to default</button></div>
+    </div>
+  </div>
+  <div class="card" id="legal">
+    <h3>Legal boundaries (Canada)</h3>
+    <ul class="small">
+      <li>Everything here is <b>intentionally published</b> by its owner: public SDR directories, government traffic cameras, NOAA/NASA imagery, ADS-B aggregators.</li>
+      <li>This app does <b>not</b> scan for, discover or connect to unsecured cameras or devices. Accessing a system you aren't authorized to use is an offence (Criminal Code s.342.1) even with no password involved.</li>
+      <li>Radio: receiving open broadcasts, amateur, aviation and weather traffic is fine. Under the Radiocommunication Act you must not divulge or use private radiocommunications you happen to hear, and must not decode encrypted signals.</li>
+      <li>Respect each receiver owner's time limits and slot counts — they share their hardware for free.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-box">
+    <div class="viewer-bar"><div class="viewer-title mono" id="modal-title"></div><a class="btn sm" id="modal-link" target="_blank" rel="noopener">source ↗</a><button class="btn sm ghost" id="modal-close">✕</button></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="small muted" id="modal-caption"></div>
+  </div>
+</div>
+
+<script src="/vendor/leaflet.js"></script>
+<script src="/vendor/hls.min.js" defer></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

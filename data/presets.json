@@ -1,0 +1,1065 @@
+{
+ "groups": [
+  {
+   "id": "voice",
+   "label": "Voice traffic"
+  },
+  {
+   "id": "broadcast",
+   "label": "Broadcast"
+  },
+  {
+   "id": "wxtime",
+   "label": "Weather & time"
+  },
+  {
+   "id": "data",
+   "label": "Data & digital"
+  },
+  {
+   "id": "ref",
+   "label": "Reference"
+  }
+ ],
+ "categories": [
+  {
+   "id": "airband",
+   "label": "Airband",
+   "icon": "✈",
+   "group": "voice",
+   "ranges": [
+    [
+     118000,
+     137000
+    ],
+    [
+     2850,
+     22000
+    ]
+   ],
+   "tags": [
+    "airband"
+   ],
+   "blurb": "Civil aviation voice: VHF AM (118–137 MHz, line-of-sight, so you need a receiver near an airport) and long-range HF upper-sideband for oceanic traffic. Gander Radio runs the North Atlantic right next to PEI.",
+   "legal": "Listening is fine; in Canada do not record-and-share or act on what you hear (Radiocommunication Act s.9(2)).",
+   "presets": [
+    {
+     "name": "Air guard / emergency",
+     "khz": 121500,
+     "mode": "am"
+    },
+    {
+     "name": "Air-to-air",
+     "khz": 123450,
+     "mode": "am"
+    },
+    {
+     "name": "Unicom",
+     "khz": 122800,
+     "mode": "am"
+    },
+    {
+     "name": "Canadian en-route (126.7)",
+     "khz": 126700,
+     "mode": "am"
+    },
+    {
+     "name": "NAT-A Gander/Shanwick",
+     "khz": 3016,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT-A",
+     "khz": 5598,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT-A",
+     "khz": 8906,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT-B",
+     "khz": 2899,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT-B",
+     "khz": 5616,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT-B",
+     "khz": 8864,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT-C",
+     "khz": 8879,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT-C",
+     "khz": 11336,
+     "mode": "usb"
+    },
+    {
+     "name": "NAT (day)",
+     "khz": 13306,
+     "mode": "usb"
+    }
+   ],
+   "links": [
+    {
+     "name": "LiveATC — Halifax CYHZ",
+     "url": "https://www.liveatc.net/search/?icao=CYHZ",
+     "note": "volunteer airband audio"
+    },
+    {
+     "name": "LiveATC — Gander oceanic",
+     "url": "https://www.liveatc.net/search/?icao=CYQX",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "marine",
+   "label": "Marine",
+   "icon": "⚓",
+   "group": "voice",
+   "ranges": [
+    [
+     156000,
+     162100
+    ],
+    [
+     2000,
+     8800
+    ],
+    [
+     490,
+     520
+    ]
+   ],
+   "tags": [
+    "marine"
+   ],
+   "blurb": "Maritime distress & calling, Coast Guard broadcasts and the HF safety channels. NAVTEX and AIS are data — you will hear tones/bursts; dedicated decoders show the text/ship positions.",
+   "legal": "Distress and safety channels are fine to monitor; ship-to-ship conversations are private comms — don't divulge them.",
+   "presets": [
+    {
+     "name": "VHF Ch 16 distress / calling",
+     "khz": 156800,
+     "mode": "fm"
+    },
+    {
+     "name": "VHF Ch 70 DSC (data)",
+     "khz": 156525,
+     "mode": "fm"
+    },
+    {
+     "name": "CCG Continuous Marine Bcst 21B",
+     "khz": 161650,
+     "mode": "fm"
+    },
+    {
+     "name": "CCG CMB 83B",
+     "khz": 161775,
+     "mode": "fm"
+    },
+    {
+     "name": "AIS 1 (data)",
+     "khz": 161975,
+     "mode": "fm"
+    },
+    {
+     "name": "AIS 2 (data)",
+     "khz": 162025,
+     "mode": "fm"
+    },
+    {
+     "name": "HF distress 2182",
+     "khz": 2182,
+     "mode": "usb"
+    },
+    {
+     "name": "HF safety 4125",
+     "khz": 4125,
+     "mode": "usb"
+    },
+    {
+     "name": "HF safety 6215",
+     "khz": 6215,
+     "mode": "usb"
+    },
+    {
+     "name": "HF safety 8291",
+     "khz": 8291,
+     "mode": "usb"
+    },
+    {
+     "name": "NAVTEX 518 kHz (data)",
+     "khz": 516.5,
+     "mode": "usb"
+    },
+    {
+     "name": "NAVTEX 490 kHz (data)",
+     "khz": 488.5,
+     "mode": "usb"
+    },
+    {
+     "name": "USCG NMN HF voice weather",
+     "khz": 4426,
+     "mode": "usb"
+    },
+    {
+     "name": "USCG NMN",
+     "khz": 6501,
+     "mode": "usb"
+    },
+    {
+     "name": "USCG NMN",
+     "khz": 8764,
+     "mode": "usb"
+    }
+   ],
+   "links": [
+    {
+     "name": "MarineTraffic — public AIS map",
+     "url": "https://www.marinetraffic.com/",
+     "note": "ship positions from volunteer AIS receivers"
+    },
+    {
+     "name": "CCG Marine Communications",
+     "url": "https://www.ccg-gcc.gc.ca/mcts-sctm/index-eng.html",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "ham",
+   "label": "Ham / HF",
+   "icon": "⚡",
+   "group": "voice",
+   "ranges": [
+    [
+     1800,
+     2000
+    ],
+    [
+     3500,
+     4000
+    ],
+    [
+     7000,
+     7300
+    ],
+    [
+     10100,
+     10150
+    ],
+    [
+     14000,
+     14350
+    ],
+    [
+     18068,
+     18168
+    ],
+    [
+     21000,
+     21450
+    ],
+    [
+     24890,
+     24990
+    ],
+    [
+     28000,
+     29700
+    ],
+    [
+     50000,
+     54000
+    ],
+    [
+     144000,
+     148000
+    ],
+    [
+     420000,
+     450000
+    ]
+   ],
+   "tags": [
+    "vhf",
+    "hf"
+   ],
+   "blurb": "Licensed amateur operators — open by design. Voice on LSB below 10 MHz and USB above, Morse (CW), FT8 digital, and the worldwide NCDXF propagation beacons that tell you which bands are open right now.",
+   "presets": [
+    {
+     "name": "80 m voice",
+     "khz": 3750,
+     "mode": "lsb"
+    },
+    {
+     "name": "40 m voice",
+     "khz": 7200,
+     "mode": "lsb"
+    },
+    {
+     "name": "40 m FT8",
+     "khz": 7074,
+     "mode": "usb"
+    },
+    {
+     "name": "20 m voice",
+     "khz": 14250,
+     "mode": "usb"
+    },
+    {
+     "name": "20 m FT8",
+     "khz": 14074,
+     "mode": "usb"
+    },
+    {
+     "name": "20 m CW",
+     "khz": 14030,
+     "mode": "cw"
+    },
+    {
+     "name": "NCDXF beacon 20 m",
+     "khz": 14100,
+     "mode": "cw"
+    },
+    {
+     "name": "NCDXF beacon 17 m",
+     "khz": 18110,
+     "mode": "cw"
+    },
+    {
+     "name": "NCDXF beacon 15 m",
+     "khz": 21150,
+     "mode": "cw"
+    },
+    {
+     "name": "15 m voice",
+     "khz": 21300,
+     "mode": "usb"
+    },
+    {
+     "name": "NCDXF beacon 10 m",
+     "khz": 28200,
+     "mode": "cw"
+    },
+    {
+     "name": "10 m voice",
+     "khz": 28400,
+     "mode": "usb"
+    },
+    {
+     "name": "2 m simplex (NA)",
+     "khz": 146520,
+     "mode": "fm"
+    },
+    {
+     "name": "2 m calling (EU)",
+     "khz": 145500,
+     "mode": "fm"
+    }
+   ],
+   "links": [
+    {
+     "name": "PSK Reporter — live band map",
+     "url": "https://pskreporter.info/pskmap.html",
+     "note": ""
+    },
+    {
+     "name": "NCDXF beacon schedule",
+     "url": "https://www.ncdxf.org/beacon/",
+     "note": ""
+    },
+    {
+     "name": "Get licensed (ISED Basic)",
+     "url": "https://ised-isde.canada.ca/site/amateur-radio-operator-certificate-services/en",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "shortwave",
+   "label": "Shortwave bcst",
+   "icon": "◎",
+   "group": "broadcast",
+   "ranges": [
+    [
+     2300,
+     26100
+    ]
+   ],
+   "tags": [
+    "hf"
+   ],
+   "blurb": "International broadcasters on the HF broadcast bands (AM). Lower bands work best at night, higher bands by day. Pick a band and browse — schedules change every season.",
+   "presets": [
+    {
+     "name": "60 m band",
+     "khz": 4900,
+     "mode": "am"
+    },
+    {
+     "name": "49 m band",
+     "khz": 6000,
+     "mode": "am"
+    },
+    {
+     "name": "41 m band",
+     "khz": 7300,
+     "mode": "am"
+    },
+    {
+     "name": "31 m band",
+     "khz": 9600,
+     "mode": "am"
+    },
+    {
+     "name": "WRMI Florida",
+     "khz": 9955,
+     "mode": "am"
+    },
+    {
+     "name": "25 m band",
+     "khz": 11800,
+     "mode": "am"
+    },
+    {
+     "name": "22 m band",
+     "khz": 13700,
+     "mode": "am"
+    },
+    {
+     "name": "19 m band",
+     "khz": 15400,
+     "mode": "am"
+    },
+    {
+     "name": "16 m band",
+     "khz": 17700,
+     "mode": "am"
+    },
+    {
+     "name": "13 m band",
+     "khz": 21600,
+     "mode": "am"
+    }
+   ],
+   "links": [
+    {
+     "name": "Short-wave.info — what's on now",
+     "url": "https://www.short-wave.info/",
+     "note": ""
+    },
+    {
+     "name": "EiBi seasonal schedule",
+     "url": "http://www.eibispace.de/",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "am",
+   "label": "AM broadcast",
+   "icon": "▣",
+   "group": "broadcast",
+   "ranges": [
+    [
+     530,
+     1710
+    ]
+   ],
+   "tags": [],
+   "blurb": "Medium-wave AM stations. Ground wave by day, skywave over 1000+ km at night — try a Maritime receiver after dark.",
+   "presets": [
+    {
+     "name": "CBN St. John's NL",
+     "khz": 640,
+     "mode": "am"
+    },
+    {
+     "name": "CJYQ / clear channel area",
+     "khz": 930,
+     "mode": "am"
+    },
+    {
+     "name": "CFRB Toronto",
+     "khz": 1010,
+     "mode": "am"
+    },
+    {
+     "name": "WBZ Boston",
+     "khz": 1030,
+     "mode": "am"
+    }
+   ],
+   "links": []
+  },
+  {
+   "id": "fm",
+   "label": "FM broadcast",
+   "icon": "♫",
+   "group": "broadcast",
+   "ranges": [
+    [
+     87500,
+     108000
+    ]
+   ],
+   "tags": [
+    "vhf"
+   ],
+   "blurb": "Wide-band FM (88–108 MHz). Most KiwiSDR/WebSDR are HF-only, so look for OpenWebRX receivers with VHF coverage.",
+   "presets": [
+    {
+     "name": "FM 96.1",
+     "khz": 96100,
+     "mode": "wfm"
+    },
+    {
+     "name": "FM 100.0",
+     "khz": 100000,
+     "mode": "wfm"
+    }
+   ],
+   "links": [
+    {
+     "name": "CBC Listen (official stream)",
+     "url": "https://www.cbc.ca/listen/live-radio",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "weather",
+   "label": "Weather / NOAA",
+   "icon": "☁",
+   "group": "wxtime",
+   "ranges": [
+    [
+     3400,
+     13300
+    ],
+    [
+     162400,
+     162550
+    ]
+   ],
+   "tags": [
+    "wx"
+   ],
+   "blurb": "Aviation VOLMET (spoken airport weather), HF weatherfax charts from Halifax (CFH) and Boston (NMF) — decode the tones with fldigi — and the 7 NOAA / Environment Canada Weatheradio channels.",
+   "presets": [
+    {
+     "name": "Gander VOLMET",
+     "khz": 6604,
+     "mode": "usb"
+    },
+    {
+     "name": "Gander VOLMET",
+     "khz": 10051,
+     "mode": "usb"
+    },
+    {
+     "name": "Gander VOLMET (night)",
+     "khz": 3485,
+     "mode": "usb"
+    },
+    {
+     "name": "Gander VOLMET",
+     "khz": 13282,
+     "mode": "usb"
+    },
+    {
+     "name": "Shannon VOLMET",
+     "khz": 5505,
+     "mode": "usb"
+    },
+    {
+     "name": "Shannon VOLMET",
+     "khz": 8957,
+     "mode": "usb"
+    },
+    {
+     "name": "Halifax CFH weatherfax",
+     "khz": 4269.1,
+     "mode": "usb"
+    },
+    {
+     "name": "Halifax CFH weatherfax",
+     "khz": 6494.5,
+     "mode": "usb"
+    },
+    {
+     "name": "Halifax CFH weatherfax",
+     "khz": 10534.1,
+     "mode": "usb"
+    },
+    {
+     "name": "Boston NMF weatherfax",
+     "khz": 4233.1,
+     "mode": "usb"
+    },
+    {
+     "name": "Boston NMF weatherfax",
+     "khz": 6338.6,
+     "mode": "usb"
+    },
+    {
+     "name": "Boston NMF weatherfax",
+     "khz": 9108.1,
+     "mode": "usb"
+    },
+    {
+     "name": "Boston NMF weatherfax",
+     "khz": 12748.1,
+     "mode": "usb"
+    },
+    {
+     "name": "Weatheradio WX1",
+     "khz": 162550,
+     "mode": "fm"
+    },
+    {
+     "name": "Weatheradio WX2",
+     "khz": 162400,
+     "mode": "fm"
+    },
+    {
+     "name": "Weatheradio WX3",
+     "khz": 162475,
+     "mode": "fm"
+    },
+    {
+     "name": "Weatheradio WX4",
+     "khz": 162425,
+     "mode": "fm"
+    },
+    {
+     "name": "Weatheradio WX5",
+     "khz": 162450,
+     "mode": "fm"
+    },
+    {
+     "name": "Weatheradio WX6",
+     "khz": 162500,
+     "mode": "fm"
+    },
+    {
+     "name": "Weatheradio WX7",
+     "khz": 162525,
+     "mode": "fm"
+    }
+   ],
+   "links": [
+    {
+     "name": "Environment Canada Weatheradio map",
+     "url": "https://www.canada.ca/en/environment-climate-change/services/weatheradio.html",
+     "note": ""
+    },
+    {
+     "name": "NOAA radiofax schedules",
+     "url": "https://www.weather.gov/marine/radiofax_charts",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "time",
+   "label": "Time signals",
+   "icon": "◷",
+   "group": "wxtime",
+   "ranges": [
+    [
+     40,
+     80
+    ],
+    [
+     2500,
+     20000
+    ]
+   ],
+   "tags": [],
+   "blurb": "Atomic-clock stations: CHU (Ottawa, voice in English/French), WWV/WWVH (USA), RWM (Moscow, Morse ticks) and the LF stations that set radio-controlled clocks. Great for checking propagation.",
+   "presets": [
+    {
+     "name": "CHU Ottawa",
+     "khz": 3330,
+     "mode": "usb"
+    },
+    {
+     "name": "CHU Ottawa",
+     "khz": 7850,
+     "mode": "usb"
+    },
+    {
+     "name": "CHU Ottawa",
+     "khz": 14670,
+     "mode": "usb"
+    },
+    {
+     "name": "WWV/WWVH",
+     "khz": 2500,
+     "mode": "am"
+    },
+    {
+     "name": "WWV/WWVH",
+     "khz": 5000,
+     "mode": "am"
+    },
+    {
+     "name": "WWV/WWVH",
+     "khz": 10000,
+     "mode": "am"
+    },
+    {
+     "name": "WWV/WWVH",
+     "khz": 15000,
+     "mode": "am"
+    },
+    {
+     "name": "WWV",
+     "khz": 20000,
+     "mode": "am"
+    },
+    {
+     "name": "RWM Moscow",
+     "khz": 4996,
+     "mode": "cw"
+    },
+    {
+     "name": "RWM Moscow",
+     "khz": 9996,
+     "mode": "cw"
+    },
+    {
+     "name": "RWM Moscow",
+     "khz": 14996,
+     "mode": "cw"
+    },
+    {
+     "name": "WWVB / MSF (LF)",
+     "khz": 60,
+     "mode": "cw"
+    },
+    {
+     "name": "DCF77 (LF)",
+     "khz": 77.5,
+     "mode": "cw"
+    },
+    {
+     "name": "JJY (LF)",
+     "khz": 40,
+     "mode": "cw"
+    }
+   ],
+   "links": [
+    {
+     "name": "NRC — CHU",
+     "url": "https://nrc.canada.ca/en/certifications-evaluations-standards/canadas-official-time/nrc-shortwave-station-broadcasts-chu",
+     "note": ""
+    },
+    {
+     "name": "NIST — WWV",
+     "url": "https://www.nist.gov/pml/time-and-frequency-division/time-distribution/radio-station-wwv",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "adsb",
+   "label": "ADS-B",
+   "icon": "◈",
+   "group": "data",
+   "ranges": [
+    [
+     1090000,
+     1090000
+    ],
+    [
+     978000,
+     978000
+    ]
+   ],
+   "tags": [
+    "adsb"
+   ],
+   "view": "flights",
+   "blurb": "Aircraft broadcast their own position on 1090 MHz. The Flights tab shows it live from the public adsb.fi network; some OpenWebRX receivers decode it too. With your own RTL-SDR you can feed the network.",
+   "presets": [
+    {
+     "name": "ADS-B 1090 MHz",
+     "khz": 1090000,
+     "mode": "am"
+    },
+    {
+     "name": "UAT 978 MHz (US)",
+     "khz": 978000,
+     "mode": "am"
+    }
+   ],
+   "links": [
+    {
+     "name": "globe.adsb.fi",
+     "url": "https://globe.adsb.fi/",
+     "note": ""
+    },
+    {
+     "name": "adsb.lol",
+     "url": "https://adsb.lol/",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "acars",
+   "label": "ACARS / HFDL",
+   "icon": "✉",
+   "group": "data",
+   "ranges": [
+    [
+     129000,
+     137000
+    ],
+    [
+     2900,
+     22000
+    ]
+   ],
+   "tags": [
+    "acars"
+   ],
+   "blurb": "Aircraft text datalinks: VHF ACARS (AM bursts near 129–131 MHz) and HF Data Link (HFDL). Here you can hear and identify the signal; decoders such as acarsdec / dumphfdl turn it into text.",
+   "legal": "ACARS messages are addressed to airlines. In Canada treat their content as private: identifying the signal is fine, but don't log, publish or use message contents.",
+   "presets": [
+    {
+     "name": "ACARS primary (worldwide)",
+     "khz": 131550,
+     "mode": "am"
+    },
+    {
+     "name": "ACARS NA",
+     "khz": 130025,
+     "mode": "am"
+    },
+    {
+     "name": "ACARS NA",
+     "khz": 129125,
+     "mode": "am"
+    },
+    {
+     "name": "ACARS NA",
+     "khz": 131125,
+     "mode": "am"
+    },
+    {
+     "name": "VDL2 NA (data)",
+     "khz": 136975,
+     "mode": "am"
+    }
+   ],
+   "links": [
+    {
+     "name": "Signal ID wiki — ACARS",
+     "url": "https://www.sigidwiki.com/wiki/Aircraft_Communications_Addressing_and_Reporting_System_(ACARS)",
+     "note": ""
+    },
+    {
+     "name": "Signal ID wiki — HFDL",
+     "url": "https://www.sigidwiki.com/wiki/HF_Data_Link_(HFDL)",
+     "note": ""
+    },
+    {
+     "name": "HFDL ground station frequencies",
+     "url": "https://hfdl.observer/",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "aprs",
+   "label": "APRS",
+   "icon": "⚑",
+   "group": "data",
+   "ranges": [
+    [
+     144390,
+     144390
+    ],
+    [
+     144800,
+     144800
+    ],
+    [
+     145825,
+     145825
+    ],
+    [
+     10147,
+     10148
+    ]
+   ],
+   "tags": [
+    "aprs"
+   ],
+   "blurb": "Automatic Packet Reporting System — hams beaconing position, weather stations and messages as 1200-baud packets. Fully public; aprs.fi maps every packet heard by internet gateways.",
+   "presets": [
+    {
+     "name": "APRS North America",
+     "khz": 144390,
+     "mode": "fm"
+    },
+    {
+     "name": "APRS Europe",
+     "khz": 144800,
+     "mode": "fm"
+    },
+    {
+     "name": "ISS digipeater",
+     "khz": 145825,
+     "mode": "fm"
+    },
+    {
+     "name": "HF APRS 30 m",
+     "khz": 10147.6,
+     "mode": "usb"
+    }
+   ],
+   "links": [
+    {
+     "name": "aprs.fi — live map",
+     "url": "https://aprs.fi/",
+     "note": ""
+    },
+    {
+     "name": "aprs.fi — around PEI",
+     "url": "https://aprs.fi/#!lat=46.24&lng=-63.13&z=9",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "sat",
+   "label": "Satellites",
+   "icon": "☄",
+   "group": "data",
+   "ranges": [
+    [
+     137000,
+     138000
+    ],
+    [
+     145800,
+     145830
+    ]
+   ],
+   "tags": [
+    "sat"
+   ],
+   "blurb": "Weather and amateur satellites passing overhead. Meteor-M LRPT (137 MHz) sends cloud imagery; the ISS does occasional SSTV and voice on 145.800. NOAA-15/18/19 APT was retired in 2025. Passes last ~12 min — check a pass predictor first.",
+   "presets": [
+    {
+     "name": "Meteor-M LRPT",
+     "khz": 137900,
+     "mode": "fm"
+    },
+    {
+     "name": "Meteor-M LRPT (alt)",
+     "khz": 137100,
+     "mode": "fm"
+    },
+    {
+     "name": "ISS voice / SSTV",
+     "khz": 145800,
+     "mode": "fm"
+    },
+    {
+     "name": "ISS APRS",
+     "khz": 145825,
+     "mode": "fm"
+    }
+   ],
+   "links": [
+    {
+     "name": "N2YO — pass predictions",
+     "url": "https://www.n2yo.com/",
+     "note": ""
+    },
+    {
+     "name": "ARISS SSTV events",
+     "url": "https://www.ariss.org/",
+     "note": ""
+    },
+    {
+     "name": "SatNOGS — public ground-station recordings",
+     "url": "https://network.satnogs.org/",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "numbers",
+   "label": "Numbers (ref)",
+   "icon": "#",
+   "group": "ref",
+   "ranges": [
+    [
+     3000,
+     20000
+    ]
+   ],
+   "tags": [
+    "hf"
+   ],
+   "blurb": "Reference only. \"Numbers stations\" are one-way shortwave broadcasts of spoken digits or data, widely believed to be for intelligence services. Schedules shift constantly — check Priyom, then tune any HF receiver to the listed time and frequency.",
+   "presets": [],
+   "links": [
+    {
+     "name": "Priyom.org — schedules & logs",
+     "url": "https://priyom.org/number-stations",
+     "note": ""
+    },
+    {
+     "name": "Signal ID wiki — numbers stations",
+     "url": "https://www.sigidwiki.com/wiki/Category:Number_Stations",
+     "note": ""
+    },
+    {
+     "name": "ENIGMA 2000 archive",
+     "url": "http://www.apc.uk.net/enigma2000/",
+     "note": ""
+    }
+   ]
+  }
+ ],
+ "audioStreams": [
+  {
+   "name": "LiveATC — Halifax (CYHZ) tower/approach feeds",
+   "url": "https://www.liveatc.net/search/?icao=CYHZ",
+   "note": "Public airband audio streamed by volunteers. Opens in a new tab."
+  },
+  {
+   "name": "LiveATC — Moncton (CYQM) feeds",
+   "url": "https://www.liveatc.net/search/?icao=CYQM",
+   "note": "Closest airband feeds to PEI, when available."
+  },
+  {
+   "name": "LiveATC — Gander oceanic HF",
+   "url": "https://www.liveatc.net/search/?icao=CYQX",
+   "note": "North Atlantic HF air traffic."
+  },
+  {
+   "name": "Broadcastify — Canada public feeds",
+   "url": "https://www.broadcastify.com/listen/ctid/1",
+   "note": "Publicly-licensed scanner audio feeds (only unencrypted channels their owners chose to publish)."
+  }
+ ]
+}

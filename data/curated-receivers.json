@@ -1,0 +1,9 @@
+[
+  {"name":"Wide-band WebSDR, University of Twente, Enschede, NL (0–29 MHz, the classic)","url":"http://websdr.ewi.utwente.nl:8901/","gps":"(52.2389,6.8568)","bands":"0-29160000","loc":"Enschede, Netherlands"},
+  {"name":"NA5B VHF Airband WebSDR, Washington DC area (118–137 MHz)","url":"http://na5b.com:8902/","gps":"(38.9,-77.0)","bands":"118000000-137000000","loc":"Washington DC, USA"},
+  {"name":"NA5B HF WebSDR, Washington DC area","url":"http://na5b.com:8901/","gps":"(38.9,-77.0)","bands":"0-30000000","loc":"Washington DC, USA"},
+  {"name":"K3FEF WebSDR, Milford PA","url":"http://k3fef.com:8901/","gps":"(41.32,-74.80)","bands":"0-30000000","loc":"Milford, PA, USA"},
+  {"name":"Northern Utah WebSDR — 2 m / airband (Peach)","url":"http://slc2meters.sdrutah.org:8901/","gps":"(41.55,-112.11)","bands":"118000000-148000000","loc":"Corinne, UT, USA"},
+  {"name":"Northern Utah WebSDR (Magenta, HF)","url":"http://websdr4.sdrutah.org:8904/index1a.html","gps":"(41.55,-112.11)","bands":"0-30000000","loc":"Corinne, UT, USA"},
+  {"name":"HB9HIT VHF Airband, Lausanne, CH","url":"http://swiss.ham-radio-op.net:8073/","gps":"(46.52,6.63)","bands":"115000000-150000000","loc":"Lausanne, Switzerland"}
+]

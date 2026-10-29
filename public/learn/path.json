@@ -1,0 +1,528 @@
+{
+ "levels": [
+  {
+   "id": "l1",
+   "title": "Level 1 — Listener",
+   "sub": "What a signal is, how to tune one, and what you're allowed to do with it.",
+   "modules": [
+    {
+     "id": "waves",
+     "title": "Radio waves, frequency & wavelength",
+     "mins": 4,
+     "body": [
+      "A radio signal is an electromagnetic wave. Its <b>frequency</b> is how many times per second it oscillates (1 kHz = 1,000/s, 1 MHz = 1,000,000/s). Its <b>wavelength</b> is how far it travels during one oscillation.",
+      "Wavelength in metres ≈ <code>300 / frequency in MHz</code>. CHU at 7.85 MHz has a ~38 m wavelength; airband at 121.5 MHz is ~2.5 m; ADS-B at 1090 MHz is ~27 cm.",
+      "Engineers split the spectrum into bands: LF (30–300 kHz), MF (0.3–3 MHz, AM radio), <b>HF</b> (3–30 MHz, \"shortwave\" — bounces around the world), <b>VHF</b> (30–300 MHz, FM radio and airband — line-of-sight) and UHF (300 MHz–3 GHz)."
+     ],
+     "key": "Lower frequency → longer wave → travels further around the Earth. Higher frequency → shorter wave → mostly line-of-sight.",
+     "tries": [
+      {
+       "label": "Browse every receiver",
+       "go": "radio",
+       "cat": "all"
+      }
+     ],
+     "quiz": {
+      "q": "What is the approximate wavelength of a 100 MHz FM station?",
+      "opts": [
+       "30 m",
+       "3 m",
+       "30 cm",
+       "300 m"
+      ],
+      "ans": 1,
+      "why": "300 / 100 = 3 metres."
+     }
+    },
+    {
+     "id": "modulation",
+     "title": "Modulation: AM, FM, SSB and CW",
+     "mins": 5,
+     "body": [
+      "A plain carrier wave carries no information. <b>Modulation</b> changes it to carry sound or data.",
+      "<b>AM</b> varies the strength — used by AM broadcast, shortwave broadcast and aviation VHF (two stations transmitting at once are both still heard, which matters for safety). <b>FM</b> varies the frequency — clean audio for FM radio, marine VHF and NOAA Weatheradio.",
+      "<b>SSB</b> (single sideband, USB/LSB) removes the carrier and one half of an AM signal to save power — used for HF voice by hams, oceanic aircraft and ships. If SSB sounds like Donald Duck, you're slightly mistuned. <b>CW</b> is Morse code: the carrier simply switched on and off."
+     ],
+     "key": "Pick the right mode or you hear noise: AM for airband & broadcast, USB/LSB for HF voice, FM for VHF voice.",
+     "tries": [
+      {
+       "label": "Hear AM: 31 m broadcast",
+       "go": "radio",
+       "cat": "shortwave",
+       "khz": 9600
+      },
+      {
+       "label": "Hear USB: Gander oceanic",
+       "go": "radio",
+       "cat": "airband",
+       "khz": 8891
+      },
+      {
+       "label": "Hear CW: NCDXF beacon",
+       "go": "radio",
+       "cat": "ham",
+       "khz": 14100
+      }
+     ],
+     "quiz": {
+      "q": "Which mode is used for civil aviation voice on VHF?",
+      "opts": [
+       "FM",
+       "USB",
+       "AM",
+       "CW"
+      ],
+      "ans": 2,
+      "why": "Aviation VHF uses AM so overlapping transmissions are both audible."
+     }
+    },
+    {
+     "id": "websdr",
+     "title": "Web SDRs and reading a waterfall",
+     "mins": 5,
+     "body": [
+      "A <b>software-defined radio</b> (SDR) digitises a whole slice of spectrum and lets software do the tuning. KiwiSDR, WebSDR and OpenWebRX owners share theirs over the internet — that's what the Radio tab lists.",
+      "The <b>waterfall</b> is the scrolling picture: horizontal = frequency, vertical = time, brightness = signal strength. Steady vertical lines are carriers; dotted lines are Morse; fuzzy columns ~3 kHz wide are SSB voice; wide stripes are broadcasts.",
+      "Each receiver has a limited number of user slots. Be polite: close the tab when done, respect time limits."
+     ],
+     "key": "Click on a signal in the waterfall to tune it, then adjust mode and filter width until it sounds clear.",
+     "tries": [
+      {
+       "label": "Open the nearest receiver",
+       "go": "radio",
+       "cat": "all"
+      },
+      {
+       "label": "See receivers on the map",
+       "go": "map"
+      }
+     ],
+     "quiz": {
+      "q": "On a waterfall, the vertical axis shows…",
+      "opts": [
+       "frequency",
+       "time",
+       "signal strength",
+       "bandwidth"
+      ],
+      "ans": 1,
+      "why": "Frequency runs left–right, time scrolls top-down, brightness is strength."
+     }
+    },
+    {
+     "id": "time",
+     "title": "Your first catch: time signals",
+     "mins": 3,
+     "body": [
+      "Time stations broadcast continuously, so they're the perfect first target. <b>CHU</b> in Ottawa announces the time in English and French on 3.330, 7.850 and 14.670 MHz. <b>WWV</b> (Colorado) and <b>WWVH</b> (Hawaii) share 2.5/5/10/15/20 MHz.",
+      "Whether you can hear them from a given receiver tells you about propagation — which frequencies are \"open\" between two places right now."
+     ],
+     "key": "If CHU on 7.850 is loud from a European receiver, the 40 m path across the Atlantic is open.",
+     "tries": [
+      {
+       "label": "Tune CHU 7.850 MHz",
+       "go": "radio",
+       "cat": "time",
+       "khz": 7850
+      },
+      {
+       "label": "Tune WWV 10 MHz",
+       "go": "radio",
+       "cat": "time",
+       "khz": 10000
+      }
+     ],
+     "quiz": {
+      "q": "Where is the CHU time station?",
+      "opts": [
+       "Halifax",
+       "Ottawa",
+       "Boulder",
+       "Moscow"
+      ],
+      "ans": 1,
+      "why": "CHU is run by the National Research Council in Ottawa."
+     }
+    },
+    {
+     "id": "legal",
+     "title": "What's legal in Canada",
+     "mins": 4,
+     "body": [
+      "Under the Radiocommunication Act, listening to the radio spectrum is generally allowed. Broadcasts, amateur radio, time and weather stations are meant for everyone.",
+      "What is restricted: <b>divulging or using</b> a private radiocommunication you happen to hear (s.9(2)) — e.g. posting a ship-to-ship call or an airline's datalink message — and <b>decoding encrypted</b> signals or subscription services (s.9(1)(c)). Accessing cameras or devices you're not authorised to use is a Criminal Code offence even with no password.",
+      "This app only surfaces receivers, cameras and feeds that their owners published on purpose."
+     ],
+     "key": "Listen and learn freely; don't share or act on private traffic, and never bypass encryption or log-ins.",
+     "tries": [
+      {
+       "label": "Read the legal notes",
+       "go": "settings",
+       "anchor": "legal"
+      }
+     ],
+     "quiz": {
+      "q": "You hear a ship-to-ship conversation on a public SDR. What is OK?",
+      "opts": [
+       "Post a recording online",
+       "Use the info to win a bid",
+       "Just listen",
+       "Decrypt the next call"
+      ],
+      "ans": 2,
+      "why": "Listening is fine; divulging or using private comms is not."
+     }
+    }
+   ]
+  },
+  {
+   "id": "l2",
+   "title": "Level 2 — Operator",
+   "sub": "Why signals go where they go, and the services you can follow.",
+   "modules": [
+    {
+     "id": "propagation",
+     "title": "Propagation: why HF changes with the clock",
+     "mins": 6,
+     "body": [
+      "HF signals bend off the <b>ionosphere</b>, layers of charged gas 60–400 km up, created by sunlight. By day the low D-layer absorbs lower HF frequencies; at night it vanishes and the F-layer still reflects lower frequencies — so low bands open up after dark, high bands by day.",
+      "The <b>MUF</b> (maximum usable frequency) is the highest frequency that still reflects on a given path. That's why VOLMET uses 3.485 MHz at night and 13.282 MHz by day, and why AM broadcast travels 1000+ km at night.",
+      "Solar activity matters too: more sunspots → higher MUF → 10–15 m bands come alive."
+     ],
+     "key": "Night: go lower (2–8 MHz). Day: go higher (10–20 MHz).",
+     "tries": [
+      {
+       "label": "Gander VOLMET 6.604",
+       "go": "radio",
+       "cat": "weather",
+       "khz": 6604
+      },
+      {
+       "label": "Gander VOLMET night 3.485",
+       "go": "radio",
+       "cat": "weather",
+       "khz": 3485
+      }
+     ],
+     "quiz": {
+      "q": "After sunset, which frequency is more likely to reach across the Atlantic?",
+      "opts": [
+       "21 MHz",
+       "5.5 MHz",
+       "144 MHz",
+       "1090 MHz"
+      ],
+      "ans": 1,
+      "why": "Lower HF frequencies propagate best at night."
+     }
+    },
+    {
+     "id": "aviation",
+     "title": "Following aircraft: VHF, HF oceanic and ADS-B",
+     "mins": 6,
+     "body": [
+      "Over land, pilots talk to controllers on <b>VHF AM</b> (118–137 MHz). It's line-of-sight, so you need a receiver within ~100–200 km of the aircraft.",
+      "Over the North Atlantic there is no VHF coverage, so aircraft call <b>Gander</b> and <b>Shanwick</b> on HF USB (NAT frequency families A/B/C) to give position reports.",
+      "<b>ADS-B</b>: aircraft broadcast GPS position, altitude and callsign on <b>1090 MHz</b> about twice a second, unencrypted, by design. Volunteers feed it to aggregators like adsb.fi — that's the Flights tab. Squawk codes 7500/7600/7700 mean hijack / radio failure / emergency."
+     ],
+     "key": "Match a flight in the Flights tab with a Gander HF position report — that's how oceanic tracking used to work.",
+     "tries": [
+      {
+       "label": "Open live Flights",
+       "go": "flights"
+      },
+      {
+       "label": "Gander NAT 8.864",
+       "go": "radio",
+       "cat": "airband",
+       "khz": 8864
+      }
+     ],
+     "quiz": {
+      "q": "What frequency do aircraft use for ADS-B?",
+      "opts": [
+       "121.5 MHz",
+       "1090 MHz",
+       "162.55 MHz",
+       "14.074 MHz"
+      ],
+      "ans": 1,
+      "why": "ADS-B \"1090ES\" is on 1090 MHz."
+     }
+    },
+    {
+     "id": "hams",
+     "title": "Amateur radio, call signs & beacons",
+     "mins": 5,
+     "body": [
+      "Licensed hams talk worldwide, experiment and help in emergencies. In Canada you need the ISED Basic qualification to transmit — listening needs no licence.",
+      "Call signs encode location: <b>VY2</b> is Prince Edward Island, VE1 Nova Scotia, VE9 New Brunswick, VO1 Newfoundland. US calls start with K, N, W or A.",
+      "The 18 <b>NCDXF beacons</b> take turns sending their call sign in Morse on 14.100, 18.110, 21.150, 24.930 and 28.200 MHz every 10 s — a free propagation map."
+     ],
+     "key": "Hear a VY2 or VE1 on 40 m in the evening? That's a local station via near-vertical skywave.",
+     "tries": [
+      {
+       "label": "20 m voice 14.250",
+       "go": "radio",
+       "cat": "ham",
+       "khz": 14250
+      },
+      {
+       "label": "40 m voice 7.200",
+       "go": "radio",
+       "cat": "ham",
+       "khz": 7200
+      }
+     ],
+     "quiz": {
+      "q": "Which call-sign prefix belongs to Prince Edward Island?",
+      "opts": [
+       "VE1",
+       "VY2",
+       "VO1",
+       "VE9"
+      ],
+      "ans": 1,
+      "why": "VY2 = PEI."
+     }
+    },
+    {
+     "id": "marine",
+     "title": "Marine & weather services",
+     "mins": 5,
+     "body": [
+      "Ships use VHF FM channel 16 (156.8 MHz) for distress and calling, and HF 2182/4125/6215/8291 kHz for safety. The Canadian Coast Guard broadcasts continuous marine weather on VHF.",
+      "<b>Weatherfax</b>: Halifax (CFH) and Boston (NMF) send weather charts as audio tones on HF. Tune 1.9 kHz below the published frequency in USB and a decoder such as fldigi draws the chart.",
+      "NOAA / Environment Canada <b>Weatheradio</b> uses seven channels between 162.400 and 162.550 MHz."
+     ],
+     "key": "Data signals sound like warbles or buzzes — the information is in the pattern, decoded by software.",
+     "tries": [
+      {
+       "label": "Halifax CFH weatherfax",
+       "go": "radio",
+       "cat": "weather",
+       "khz": 6494.5
+      },
+      {
+       "label": "Marine Ch 16",
+       "go": "radio",
+       "cat": "marine",
+       "khz": 156800
+      }
+     ],
+     "quiz": {
+      "q": "Which VHF channel is the marine distress & calling channel?",
+      "opts": [
+       "Ch 9",
+       "Ch 16",
+       "Ch 22A",
+       "Ch 70"
+      ],
+      "ans": 1,
+      "why": "Channel 16, 156.800 MHz."
+     }
+    },
+    {
+     "id": "digital",
+     "title": "Digital modes: FT8, APRS, NAVTEX, ACARS",
+     "mins": 6,
+     "body": [
+      "Many signals are data. <b>FT8</b> (14.074 MHz) lets hams make contacts with signals too weak to hear; <b>APRS</b> (144.390 MHz in North America) carries positions and weather as 1200-baud packets; <b>NAVTEX</b> (518 kHz) sends maritime safety text.",
+      "<b>ACARS</b> (131.550 MHz and others) carries airline text messages. It's fine to identify the signal; treat the content as private — don't log or share it.",
+      "Public aggregators (PSK Reporter, aprs.fi) show what volunteer receivers decode in real time."
+     ],
+     "key": "Identify a signal by its sound + bandwidth + frequency; the Signal ID wiki has audio samples of hundreds of modes.",
+     "tries": [
+      {
+       "label": "FT8 on 20 m",
+       "go": "radio",
+       "cat": "ham",
+       "khz": 14074
+      },
+      {
+       "label": "APRS 144.390",
+       "go": "radio",
+       "cat": "aprs",
+       "khz": 144390
+      },
+      {
+       "label": "Signal ID wiki",
+       "url": "https://www.sigidwiki.com/"
+      }
+     ],
+     "quiz": {
+      "q": "In North America, APRS is on…",
+      "opts": [
+       "144.390 MHz",
+       "144.800 MHz",
+       "121.5 MHz",
+       "7.074 MHz"
+      ],
+      "ans": 0,
+      "why": "144.390 MHz in North America; 144.800 MHz in Europe."
+     }
+    }
+   ]
+  },
+  {
+   "id": "l3",
+   "title": "Level 3 — Engineer",
+   "sub": "Your own receiver, antennas, decibels and DSP.",
+   "modules": [
+    {
+     "id": "rtlsdr",
+     "title": "Your own receiver: the RTL-SDR",
+     "mins": 6,
+     "body": [
+      "An <b>RTL-SDR</b> (e.g. RTL-SDR Blog V4, ~$40 CAD) is a TV-tuner chip repurposed as a 500 kHz–1.7 GHz receiver. It streams raw samples to your laptop; software like SDR++ does the rest.",
+      "Key settings: <b>sample rate</b> (how much spectrum you see at once — about 2.4 MHz), <b>gain</b> (too high overloads, too low hides weak signals), and <b>direct sampling / upconverter</b> for HF.",
+      "<code>rtl_tcp</code> or OpenWebRX can share it over your Wi-Fi, which is what the Local RX tab will connect to."
+     ],
+     "key": "Start with gain around 30–40 dB and lower it if the waterfall fills with false signals.",
+     "tries": [
+      {
+       "label": "Local RX setup guide",
+       "go": "local"
+      }
+     ],
+     "quiz": {
+      "q": "At 2.4 MS/s, roughly how wide a slice of spectrum can you see?",
+      "opts": [
+       "24 kHz",
+       "2.4 MHz",
+       "24 MHz",
+       "240 MHz"
+      ],
+      "ans": 1,
+      "why": "With IQ (complex) sampling, visible bandwidth ≈ sample rate."
+     }
+    },
+    {
+     "id": "antennas",
+     "title": "Antennas, decibels and noise",
+     "mins": 6,
+     "body": [
+      "A <b>half-wave dipole</b> is two wires, total length ≈ <code>143 / f(MHz)</code> metres. For 1090 MHz that's ~13 cm; for 7 MHz ~20 m. Height and distance from household electronics matter more than almost anything.",
+      "<b>Decibels</b> are ratios: +3 dB = double the power, +10 dB = ten times. <b>SNR</b> is how far the signal is above the noise floor — 10 dB SNR is comfortable voice.",
+      "Indoors, LED bulbs, chargers and monitors create a \"noise floor\" that can bury weak HF signals. Outside and away from the house is always better."
+     ],
+     "key": "Improving the antenna beats buying a better radio.",
+     "tries": [
+      {
+       "label": "See receiver antennas",
+       "go": "radio",
+       "cat": "all"
+      }
+     ],
+     "quiz": {
+      "q": "A signal goes up by 3 dB. Its power has…",
+      "opts": [
+       "stayed the same",
+       "doubled",
+       "increased 10×",
+       "halved"
+      ],
+      "ans": 1,
+      "why": "+3 dB ≈ 2× power."
+     }
+    },
+    {
+     "id": "dsp",
+     "title": "DSP basics: IQ, Nyquist and filters",
+     "mins": 7,
+     "body": [
+      "An SDR samples the signal as two streams, <b>I</b> and <b>Q</b> (in-phase and quadrature), letting software tell frequencies above and below the centre apart.",
+      "<b>Nyquist</b>: to represent a signal you must sample at least twice its highest frequency (for real samples); otherwise strong signals fold back as phantom <b>aliases</b>.",
+      "Demodulators are just maths on those samples: AM = magnitude, FM = rate of phase change, SSB = shift and filter. A narrower <b>filter</b> rejects more noise but can make voice muffled."
+     ],
+     "key": "If a strong signal appears in two places, suspect overload or aliasing before anything else.",
+     "tries": [
+      {
+       "label": "Experiment with filters on a KiwiSDR",
+       "go": "radio",
+       "cat": "shortwave",
+       "khz": 9600
+      }
+     ],
+     "quiz": {
+      "q": "Real (non-IQ) sampling at 48 kHz can faithfully capture audio up to…",
+      "opts": [
+       "12 kHz",
+       "24 kHz",
+       "48 kHz",
+       "96 kHz"
+      ],
+      "ans": 1,
+      "why": "Nyquist limit = half the sample rate."
+     }
+    },
+    {
+     "id": "feeder",
+     "title": "Project: become an ADS-B feeder",
+     "mins": 6,
+     "body": [
+      "With an RTL-SDR and a 1090 MHz antenna (a 13 cm dipole or a ground-plane), <code>readsb</code> or <code>dump1090</code> decodes aircraft overhead. Put the antenna high with a clear view of the sky.",
+      "Feeding adsb.fi or adsb.lol shares your data publicly and helps coverage around PEI. In return you get stats and the satisfaction of putting dots on the map.",
+      "Bonus: a Raspberry Pi can run it 24/7 using a few watts."
+     ],
+     "key": "Line-of-sight is everything: every extra metre of antenna height adds range.",
+     "tries": [
+      {
+       "label": "See current coverage",
+       "go": "flights"
+      },
+      {
+       "label": "adsb.fi feeder guide",
+       "url": "https://github.com/adsbfi/adsb-fi-scripts"
+      }
+     ],
+     "quiz": {
+      "q": "Which antenna length suits 1090 MHz (half-wave dipole)?",
+      "opts": [
+       "~13 cm",
+       "~1.3 m",
+       "~13 m",
+       "~20 m"
+      ],
+      "ans": 0,
+      "why": "143 / 1090 ≈ 0.13 m."
+     }
+    },
+    {
+     "id": "sats",
+     "title": "Project: weather satellite images",
+     "mins": 6,
+     "body": [
+      "Russia's <b>Meteor-M</b> satellites transmit LRPT images on ~137.9 / 137.1 MHz. With an RTL-SDR, a V-dipole or QFH antenna and SatDump, you can decode cloud pictures during a ~12 min pass. (NOAA-15/18/19 APT stopped in 2025.)",
+      "Use a pass predictor (N2YO, Gpredict) and record when the satellite is above ~20° elevation. The <b>Doppler</b> shift moves the signal a few kHz during the pass.",
+      "The <b>ISS</b> occasionally sends SSTV images on 145.800 MHz FM for everyone to decode."
+     ],
+     "key": "Timing beats hardware: be ready before the pass starts.",
+     "tries": [
+      {
+       "label": "Satellite frequencies",
+       "go": "radio",
+       "cat": "sat"
+      },
+      {
+       "label": "Live GOES imagery",
+       "go": "cams",
+       "src": "imagery"
+      }
+     ],
+     "quiz": {
+      "q": "Which satellites still send weather images near 137 MHz?",
+      "opts": [
+       "NOAA-19 APT",
+       "Meteor-M LRPT",
+       "GOES HRIT",
+       "Starlink"
+      ],
+      "ans": 1,
+      "why": "NOAA APT retired in 2025; Meteor-M LRPT continues."
+     }
+    }
+   ]
+  }
+ ]
+}
